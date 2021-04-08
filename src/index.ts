@@ -1,4 +1,6 @@
 import RingCentral from '@rc-ex/core';
+import fs from 'fs';
+import path from 'path';
 
 const rc = new RingCentral({
   clientId: process.env.RINGCENTRAL_CLIENT_ID,
@@ -13,7 +15,28 @@ const rc = new RingCentral({
     password: process.env.RINGCENTRAL_PASSWORD!,
   });
 
-  console.log(rc.token?.access_token);
+  await rc
+    .restapi()
+    .account()
+    .extension()
+    .fax()
+    .post({
+      to: [
+        {
+          phoneNumber: process.env.RINGCENTRAL_RECEIVER,
+        },
+      ],
+      coverIndex: 0,
+      attachments: [
+        {
+          filename: 'test.png',
+          contentType: 'image/png',
+          content: fs.readFileSync(
+            path.join(__dirname, '..', 'ringcentral.png')
+          ),
+        },
+      ],
+    });
 
   await rc.revoke();
 })();
