@@ -15,7 +15,7 @@ const rc = new RingCentral({
     password: process.env.RINGCENTRAL_PASSWORD!,
   });
 
-  await rc
+  const r = await rc
     .restapi()
     .account()
     .extension()
@@ -26,17 +26,22 @@ const rc = new RingCentral({
           phoneNumber: process.env.RINGCENTRAL_RECEIVER,
         },
       ],
-      coverIndex: 0,
+      // coverIndex: 0,
       attachments: [
         {
-          filename: 'test.png',
-          contentType: 'image/png',
-          content: fs.readFileSync(
-            path.join(__dirname, '..', 'ringcentral.png')
-          ),
+          filename: 'test.pdf',
+          contentType: 'application/pdf',
+          content: fs.readFileSync(path.join(__dirname, '..', 'test.pdf')),
         },
       ],
     });
 
+  // const r = await rc
+  //   .restapi()
+  //   .account()
+  //   .extension()
+  //   .messageStore('1841852326016')
+  //   .get();
+  console.log(JSON.stringify(r, null, 2));
   await rc.revoke();
 })();
